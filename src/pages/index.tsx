@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import type { NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
@@ -18,30 +19,25 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="flex flex-col items-center">
-        <h1 className="font-extrabold text-center text-7xl">Cribbly</h1>
-        <button
-          className="my-10 p-4 bg-blue-400 text-xl text-gray-800 font-semibold rounded-lg"
-          onClick={() => {
-            const name = faker.name;
-            mutate({ firstName: name.firstName(), lastName: name.lastName() });
-          }}
-        >
-          Create Random Player
-        </button>
-
-        <div className="flex flex-col">
-          <h2 className="text-3xl font-bold mb-4 border-b-2 border-b-slate-800">
-            All Players
-          </h2>
-          {!isLoading && data && (
-            <ul>
-              {data.map((p) => (
-                <li key={p.id}>
-                  {p.firstName} {p.lastName}
-                </li>
-              ))}
-            </ul>
-          )}
+        <h1 className="text-9xl py-6 font-bold">
+          Crib<span className="text-blue-700">b</span>
+          <span className="text-red-600">l</span>
+          <span className="text-green-600">y</span>
+        </h1>
+        <h2 className="text-4xl text-slate-800">
+          2022 Szczepaniak Charity Cribbage Tournament
+        </h2>
+        <div className="flex flex-col items-center p-6">
+          <Link href="/prelims">
+            <button className="bg-blue-700 text-slate-100 w-full rounded-md p-4 mb-8 text-2xl font-semibold">
+              View Games
+            </button>
+          </Link>
+          <Link href="/prelims">
+            <button className="bg-blue-700 text-slate-100 w-full rounded-md p-4 mb-8 text-2xl font-semibold">
+              View Prelim Standings
+            </button>
+          </Link>
         </div>
       </div>
     </>
