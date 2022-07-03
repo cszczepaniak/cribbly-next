@@ -28,12 +28,12 @@ const Home: NextPage = () => {
           2022 Szczepaniak Charity Cribbage Tournament
         </h2>
         <div className="flex flex-col items-center p-6">
-          <Link href="/prelims">
+          <Link href="/games">
             <button className="bg-blue-700 text-slate-100 w-full rounded-md p-4 mb-8 text-2xl font-semibold">
               View Games
             </button>
           </Link>
-          <Link href="/prelims">
+          <Link href="/results/prelim">
             <button className="bg-blue-700 text-slate-100 w-full rounded-md p-4 mb-8 text-2xl font-semibold">
               View Prelim Standings
             </button>
