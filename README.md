@@ -28,6 +28,7 @@ You must be connected to a MySQL database. That can be MySQL directly, a docker 
     - [ ] Only allow certain users to access auth (so not just anyone can sign up with Google)
   - [ ] Import players/teams/etc. from CSV?
   - [ ] Export printable QR code PDF for all prelim games
+  - [ ] Admin "seed tournament" action
 
 - [ ] Create public game page
   - [ ] Page that shows the game and allows reporting the result if it's not complete yet
@@ -36,7 +37,6 @@ You must be connected to a MySQL database. That can be MySQL directly, a docker 
   - [ ] Page that shows the current prelim results
     - [ ] Maybe we want to cache this for ~a minute so several people can get it without having to hit the db every time
 
-- [ ] Admin "seed tournament" action
 
 - [ ] Once tournament is seeded:
   - [ ] Create public tournament page
