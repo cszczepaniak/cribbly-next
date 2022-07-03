@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { PropsWithChildren } from "react";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
@@ -28,19 +29,24 @@ const Home: NextPage = () => {
           2022 Szczepaniak Charity Cribbage Tournament
         </h2>
         <div className="flex flex-col items-center p-6">
-          <Link href="/games">
-            <button className="bg-blue-700 text-slate-100 w-full rounded-md p-4 mb-8 text-2xl font-semibold">
-              View Games
-            </button>
-          </Link>
-          <Link href="/results/prelim">
-            <button className="bg-blue-700 text-slate-100 w-full rounded-md p-4 mb-8 text-2xl font-semibold">
-              View Prelim Standings
-            </button>
-          </Link>
+          <HomeLink href="/games">View Games</HomeLink>
+          <HomeLink href="/results/prelim">View Prelim Standings</HomeLink>
         </div>
       </div>
     </>
+  );
+};
+
+const HomeLink: React.FC<PropsWithChildren<{ href: string }>> = ({
+  href,
+  children,
+}) => {
+  return (
+    <Link href={href}>
+      <button className="bg-blue-700 text-slate-100 w-full rounded-md p-4 mb-8 text-2xl font-semibold">
+        {children}
+      </button>
+    </Link>
   );
 };
 
