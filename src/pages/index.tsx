@@ -32,6 +32,28 @@ const Home: NextPage = () => {
           <HomeLink href="/games">View Games</HomeLink>
           <HomeLink href="/results/prelim">View Prelim Standings</HomeLink>
         </div>
+        Experiment zone:
+        <button
+          className="bg-red-200"
+          onClick={() => {
+            mutate({
+              firstName: faker.name.firstName(),
+              lastName: faker.name.lastName(),
+            });
+          }}
+        >
+          Create Random Player
+        </button>
+        All players:
+        {!isLoading && data && (
+          <ul>
+            {data.map((p) => (
+              <li key={p.id}>
+                {p.firstName} {p.lastName}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </>
   );
