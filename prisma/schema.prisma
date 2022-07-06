@@ -51,3 +51,7 @@ model Game {
     @@index([winner])
     @@index([kind])
 }
+
+model Admin {
+    email String @id
+}

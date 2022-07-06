@@ -1,8 +1,6 @@
 import { faker } from "@faker-js/faker";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { PropsWithChildren } from "react";
 import { LinkButton } from "../frontend/shared/components/link-button";
 import { trpc } from "../utils/trpc";
 
