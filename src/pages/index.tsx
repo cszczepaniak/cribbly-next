@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { PropsWithChildren } from "react";
+import { LinkButton } from "../frontend/shared/components/link-button";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
@@ -20,7 +21,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="flex flex-col items-center">
-        <h1 className=" text-8xl sm:text-9xl py-8 font-bold">
+        <h1 className="text-8xl sm:text-9xl py-8 font-bold">
           Crib<span className="text-blue-700">b</span>
           <span className="text-red-600">l</span>
           <span className="text-green-600">y</span>
@@ -29,8 +30,8 @@ const Home: NextPage = () => {
           2022 Szczepaniak Charity Cribbage Tournament
         </h2>
         <div className="flex flex-col items-center p-6">
-          <HomeLink href="/games">View Games</HomeLink>
-          <HomeLink href="/results/prelim">View Prelim Standings</HomeLink>
+          <LinkButton href="/games">View Games</LinkButton>
+          <LinkButton href="/results/prelim">View Prelim Standings</LinkButton>
         </div>
         Experiment zone:
         <button
@@ -56,19 +57,6 @@ const Home: NextPage = () => {
         )}
       </div>
     </>
-  );
-};
-
-const HomeLink: React.FC<PropsWithChildren<{ href: string }>> = ({
-  href,
-  children,
-}) => {
-  return (
-    <Link href={href}>
-      <button className="bg-blue-700 text-slate-100 w-full rounded-md p-4 mb-8 text-2xl font-semibold">
-        {children}
-      </button>
-    </Link>
   );
 };
 
