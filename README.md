@@ -19,16 +19,16 @@ You must be connected to a MySQL database. That can be MySQL directly, a docker 
 ## TODO
 
 - [ ] Create admin section
+  - [x] Require login for auth section (Google auth, maybe?)
+    - [x] Only allow certain users to access auth (so not just anyone can sign up with Google)
   - [ ] Be able to create players
   - [ ] Be able to create teams
   - [ ] Be able to put players on teams
   - [ ] Be able to create divisions
   - [ ] Be able to add teams to divisions
-  - [ ] Require login for auth section (Google auth, maybe?)
-    - [ ] Only allow certain users to access auth (so not just anyone can sign up with Google)
+  - [ ] Admin "seed tournament" action
   - [ ] Import players/teams/etc. from CSV?
   - [ ] Export printable QR code PDF for all prelim games
-  - [ ] Admin "seed tournament" action
 
 - [ ] Create public game page
   - [ ] Page that shows the game and allows reporting the result if it's not complete yet
