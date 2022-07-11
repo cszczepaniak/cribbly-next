@@ -4,6 +4,126 @@ import { useState } from "react";
 import { Button } from "@components/styled-button";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { trpc } from "utils/trpc";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { playerSchema } from "@shared/schemas";
+import { z } from "zod";
+
+type Inputs = {
+  firstName: string;
+  lastName: string;
+};
+
+const Players: NextPage = () => {
+  const [playerList, setPlayerList] = useState<
+    { tempID: string; firstName: string; lastName: string }[]
+  >([]);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setFocus,
+    formState: { errors, isValid, isSubmitted },
+  } = useForm<Inputs>({
+    resolver: zodResolver(playerSchema),
+  });
+
+  console.log(errors);
+  console.log(isValid);
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    setFocus("firstName");
+    setPlayerList((pl) => [...pl, { ...data, tempID: nanoid() }]);
+    reset();
+  };
+
+  const { mutate, isLoading } = trpc.useMutation([
+    "player.create-many-players",
+  ]);
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="max-w-lg w-full space-y-4">
+        <h1 className="text-5xl font-semibold pt-8 pb-8 text-center">
+          Players
+        </h1>
+
+        <form
+          className="w-full max-w-lg flex flex-col space-y-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="flex flex-row space-x-2 justify-between">
+            <div className="flex flex-col">
+              <input
+                {...register("firstName")}
+                type="text"
+                className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl"
+                placeholder="First Name"
+              />
+              {errors.firstName && (
+                <p className="text-red-500 italic">
+                  {errors.firstName.message}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <input
+                {...register("lastName")}
+                type="text"
+                className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl"
+                placeholder="Last Name"
+              />
+              {errors.lastName && (
+                <p className="text-red-500 italic">{errors.lastName.message}</p>
+              )}
+            </div>
+          </div>
+          <Button
+            type="submit"
+            disabled={
+              !watch("firstName") ||
+              !watch("lastName") ||
+              (isSubmitted && !isValid)
+            }
+          >
+            Add
+          </Button>
+        </form>
+        <Button
+          disabled={playerList.length === 0 || isLoading}
+          onClick={() => {
+            mutate(playerList);
+            setPlayerList([]);
+          }}
+        >
+          {isLoading ? <Spinner /> : "Save All"}
+        </Button>
+        <ul className="w-full">
+          {playerList.map((p, i) => (
+            <li
+              key={p.tempID}
+              className="flex flex-row space-y-4 justify-between items-center w-full"
+            >
+              <p className="text-xl">
+                {p.firstName} {p.lastName}
+              </p>
+              <Button
+                className="bg-slate-100 hover:bg-red-50 border border-red-600 w-32 text-lg p-2 text-red-600"
+                onClick={() =>
+                  setPlayerList((pl) => [...pl.slice(0, i), ...pl.slice(i + 1)])
+                }
+              >
+                Delete
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default Players;
 
 const Spinner: React.FC = () => {
   return (
@@ -44,93 +164,3 @@ const Spinner: React.FC = () => {
     </div>
   );
 };
-
-type Inputs = {
-  firstName: string;
-  lastName: string;
-};
-
-const Players: NextPage = () => {
-  const [playerList, setPlayerList] = useState<
-    { tempID: string; firstName: string; lastName: string }[]
-  >([]);
-
-  const { register, handleSubmit, watch, reset, setFocus } = useForm<Inputs>();
-
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    setFocus("firstName");
-    setPlayerList((pl) => [...pl, { ...data, tempID: nanoid() }]);
-    reset();
-  };
-
-  const { mutate, isLoading } = trpc.useMutation([
-    "player.create-many-players",
-  ]);
-
-  return (
-    <div className="flex flex-col items-center">
-      <div className="max-w-lg w-full space-y-4">
-        <h1 className="text-5xl font-semibold pt-8 pb-8 text-center">
-          Players
-        </h1>
-
-        <form
-          className="w-full max-w-lg flex flex-col space-y-4"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className="flex flex-row space-x-2 justify-between">
-            <input
-              type="text"
-              className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl"
-              placeholder="First Name"
-              {...register("firstName")}
-            />
-            <input
-              type="text"
-              className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl"
-              placeholder="Last Name"
-              {...register("lastName")}
-            />
-          </div>
-          <Button
-            type="submit"
-            disabled={!watch("firstName") || !watch("lastName")}
-          >
-            Add
-          </Button>
-        </form>
-        <Button
-          disabled={playerList.length === 0 || isLoading}
-          onClick={() => {
-            mutate(playerList);
-            setPlayerList([]);
-          }}
-        >
-          {isLoading ? <Spinner /> : "Save All"}
-        </Button>
-        <ul className="w-full">
-          {playerList.map((p, i) => (
-            <li
-              key={p.tempID}
-              className="flex flex-row space-y-4 justify-between items-center w-full"
-            >
-              <p className="text-xl">
-                {p.firstName} {p.lastName}
-              </p>
-              <Button
-                className="bg-slate-100 hover:bg-red-50 border border-red-600 w-32 text-lg p-2 text-red-600"
-                onClick={() =>
-                  setPlayerList((pl) => [...pl.slice(0, i), ...pl.slice(i + 1)])
-                }
-              >
-                Delete
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-};
-
-export default Players;

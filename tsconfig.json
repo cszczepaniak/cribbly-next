@@ -17,7 +17,8 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": "./src",
     "paths": {
-      "@components/*": ["frontend/shared/components/*"]
+      "@components/*": ["frontend/shared/components/*"],
+      "@shared/*": ["shared/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
