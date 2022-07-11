@@ -17,6 +17,19 @@ export const playerRouter = createRouter()
       });
     },
   })
+  .mutation("create-many-players", {
+    input: z.array(
+      z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+      })
+    ),
+    async resolve({ input }) {
+      return await prisma.player.createMany({
+        data: input,
+      });
+    },
+  })
   .query("get-all-players", {
     async resolve() {
       return await prisma.player.findMany();
