@@ -1,6 +1,6 @@
+import { LinkButton } from "@components/link-button";
 import { NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
-import { LinkButton } from "../../frontend/shared/components/link-button";
 import { trpc } from "../../utils/trpc";
 
 const AdminLinks: React.FC<{ email: string }> = ({ email }) => {
@@ -11,7 +11,12 @@ const AdminLinks: React.FC<{ email: string }> = ({ email }) => {
   }
 
   if (!data.isAdmin) {
-    return <div>Ope! Doesn&apos;t look like you&apos;re an admin...</div>;
+    return (
+      <>
+        <div>Ope! Doesn&apos;t look like you&apos;re an admin...</div>
+        <h2 className="text-xl py-8">Signed in as {email}</h2>
+      </>
+    );
   }
 
   return (
@@ -29,7 +34,6 @@ const AdminLinks: React.FC<{ email: string }> = ({ email }) => {
 
 const AdminHome: NextPage = () => {
   const { data: session } = useSession();
-  const { data, isLoading } = trpc.useQuery(["admin.get-is-admin"]);
 
   return (
     <div className="flex flex-col items-center">
