@@ -22,7 +22,7 @@ const AdminLinks: React.FC<{ email: string }> = ({ email }) => {
   return (
     <>
       <h2 className="text-xl py-8">Signed in as {email}</h2>
-      <div className="max-w-lg">
+      <div className="max-w-lg space-y-4">
         <LinkButton href="/admin/players">Player Management</LinkButton>
         <LinkButton href="/admin/teams">Team Management</LinkButton>
         <LinkButton href="/admin/divisions">Division Management</LinkButton>
@@ -36,7 +36,7 @@ const AdminHome: NextPage = () => {
   const { data: session } = useSession();
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center p-4">
       <h1 className="text-5xl font-semibold pt-8 pb-4 text-center">
         Cribbly Admin
       </h1>
