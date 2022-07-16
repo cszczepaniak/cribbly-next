@@ -6,7 +6,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { trpc } from "utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { playerSchema } from "@shared/schemas";
-import { z } from "zod";
 
 type Inputs = {
   firstName: string;

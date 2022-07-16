@@ -1,8 +1,7 @@
 import { LinkButton } from "@components/link-button";
-import { useAuth } from "frontend/shared/hooks/use-auth";
+import { useAuth } from "@hooks/use-auth";
 import { NextPage } from "next";
-import { signIn, useSession } from "next-auth/react";
-import { trpc } from "../../utils/trpc";
+import { signIn } from "next-auth/react";
 
 const AdminLinks: React.FC<{ email: string; isAdmin: boolean }> = ({
   email,
