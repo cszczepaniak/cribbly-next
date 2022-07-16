@@ -29,8 +29,6 @@ const Players: NextPage = () => {
     resolver: zodResolver(playerSchema),
   });
 
-  console.log(errors);
-  console.log(isValid);
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     setFocus("firstName");
     setPlayerList((pl) => [...pl, { ...data, tempID: nanoid() }]);

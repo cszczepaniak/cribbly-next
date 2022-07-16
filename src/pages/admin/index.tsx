@@ -1,16 +1,14 @@
 import { LinkButton } from "@components/link-button";
+import { useAuth } from "frontend/shared/hooks/use-auth";
 import { NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
 import { trpc } from "../../utils/trpc";
 
-const AdminLinks: React.FC<{ email: string }> = ({ email }) => {
-  const { data, isLoading } = trpc.useQuery(["admin.get-is-admin"]);
-
-  if (isLoading || !data) {
-    return <div>Loading admin data...</div>;
-  }
-
-  if (!data.isAdmin) {
+const AdminLinks: React.FC<{ email: string; isAdmin: boolean }> = ({
+  email,
+  isAdmin,
+}) => {
+  if (!isAdmin) {
     return (
       <>
         <div>Ope! Doesn&apos;t look like you&apos;re an admin...</div>
@@ -33,15 +31,19 @@ const AdminLinks: React.FC<{ email: string }> = ({ email }) => {
 };
 
 const AdminHome: NextPage = () => {
-  const { data: session } = useSession();
+  const { email, isAdmin, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading admin data...</div>;
+  }
 
   return (
     <div className="flex flex-col items-center p-4">
       <h1 className="text-5xl font-semibold pt-8 pb-4 text-center">
         Cribbly Admin
       </h1>
-      {session && session.user?.email ? (
-        <AdminLinks email={session.user.email} />
+      {email ? (
+        <AdminLinks email={email} isAdmin={isAdmin} />
       ) : (
         <button onClick={() => signIn()}>Sign In</button>
       )}
