@@ -19,6 +19,13 @@ const PlayerList: React.FC<{
   isLoading: boolean;
   data: InferQueryOutput<"player.get-all-players"> | undefined;
 }> = ({ isLoading, data }) => {
+  const context = trpc.useContext();
+  const { mutate } = trpc.useMutation("player.delete-player", {
+    onSuccess: () => {
+      context.invalidateQueries("player.get-all-players");
+    },
+  });
+
   if (isLoading || !data) {
     return <div>Loading players...</div>;
   }
@@ -32,7 +39,10 @@ const PlayerList: React.FC<{
           <p className="text-xl">
             {p.firstName} {p.lastName}
           </p>
-          <Button className="bg-slate-100 hover:bg-red-50 border border-red-600 w-32 text-lg p-2 text-red-600">
+          <Button
+            className="bg-slate-100 hover:bg-red-50 border border-red-600 w-32 text-lg p-2 text-red-600"
+            onClick={() => mutate({ id: p.id })}
+          >
             Delete
           </Button>
         </li>
