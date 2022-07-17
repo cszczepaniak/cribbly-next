@@ -2,7 +2,7 @@ import { createRouter } from "./context";
 import { z } from "zod";
 import { prisma } from "../db/client";
 
-export const teamsRouter = createRouter()
+export const teamRouter = createRouter()
   .mutation("create-team", {
     async resolve() {
       return await prisma.team.create({
@@ -52,6 +52,11 @@ export const teamsRouter = createRouter()
   })
   .query("get-all-teams", {
     async resolve() {
-      return await prisma.team.findMany();
+      return await prisma.team.findMany({
+        select: {
+          id: true,
+          players: true,
+        },
+      });
     },
   });
