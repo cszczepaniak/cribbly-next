@@ -1,15 +1,7 @@
-import { nanoid } from "nanoid";
 import { NextPage } from "next";
-import { useState } from "react";
 import { Button } from "@components/styled-button";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { trpc } from "utils/trpc";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { playerSchema } from "@shared/schemas";
-import { parse } from "csv-parse";
-import { z } from "zod";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
-import { isObject } from "util";
 
 const ManagePlayers: NextPage = () => {
   const { data, isLoading } = trpc.useQuery(["player.get-all-players"]);
