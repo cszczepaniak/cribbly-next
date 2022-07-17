@@ -6,16 +6,21 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { trpc } from "utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { playerSchema } from "@shared/schemas";
+import { parse } from "csv-parse";
+import { z } from "zod";
 
 type Inputs = {
   firstName: string;
   lastName: string;
 };
 
-const Players: NextPage = () => {
+const AddPlayers: NextPage = () => {
   const [playerList, setPlayerList] = useState<
     { tempID: string; firstName: string; lastName: string }[]
   >([]);
+
+  const [csvParseError, setCSVParseError] = useState("");
+  const [chosenFile, setChosenFile] = useState("");
 
   const {
     register,
@@ -38,11 +43,38 @@ const Players: NextPage = () => {
     "player.create-many-players",
   ]);
 
+  const onUploadCSV = (text: string) => {
+    parse(text, { columns: true }, (error, records) => {
+      if (error) {
+        setCSVParseError(error.message);
+        return;
+      }
+      const playersSchema = z.array(playerSchema);
+      const players = playersSchema.safeParse(records);
+      if (!players.success) {
+        const formatted = players.error.format();
+
+        setCSVParseError(
+          formatted[0]?.firstName?._errors[0]
+            ? "Missing first name in CSV"
+            : formatted[0]?.lastName?._errors[0]
+            ? "Missing last name in CSV"
+            : "Unknown CSV error"
+        );
+      } else {
+        setPlayerList((ps) => [
+          ...ps,
+          ...players.data.map((p) => ({ ...p, tempID: nanoid() })),
+        ]);
+      }
+    });
+  };
+
   return (
     <div className="flex flex-col items-center">
       <div className="max-w-lg w-full space-y-4">
         <h1 className="text-5xl font-semibold pt-8 pb-8 text-center">
-          Players
+          Add Players
         </h1>
 
         <form
@@ -86,6 +118,38 @@ const Players: NextPage = () => {
             Add
           </Button>
         </form>
+        <p className="text-xl italic font-semibold text-center">- or -</p>
+        <input
+          className="w-full
+          text-lg
+          font-semibold
+          file:bg-blue-700
+          file:text-slate-100
+          file:rounded-md
+          file:p-4
+          file:border-0
+          file:mr-4
+          file:text-2xl
+          file:cursor-pointer
+          file:w-full
+          hover:file:bg-blue-600
+          disabled:file:bg-blue-300
+          "
+          value={chosenFile}
+          type="file"
+          accept="text/csv"
+          onChange={async (e) => {
+            const f = e.target.files && e.target.files[0];
+            if (!f) {
+              return;
+            }
+            onUploadCSV(await f.text());
+            setChosenFile("");
+          }}
+        />
+        {csvParseError && (
+          <p className="text-red-500 italic">{csvParseError}</p>
+        )}
         <Button
           disabled={playerList.length === 0 || isLoading}
           onClick={() => {
@@ -120,7 +184,7 @@ const Players: NextPage = () => {
   );
 };
 
-export default Players;
+export default AddPlayers;
 
 const Spinner: React.FC = () => {
   return (
