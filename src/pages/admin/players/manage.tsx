@@ -27,7 +27,7 @@ const PlayerList: React.FC<{
   });
 
   if (isLoading || !data) {
-    return <div>Loading players...</div>;
+    return <div className="text-lg">Loading players...</div>;
   }
   return (
     <ul className="w-full max-w-lg">
