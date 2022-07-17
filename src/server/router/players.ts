@@ -15,6 +15,18 @@ export const playerRouter = createRouter()
       });
     },
   })
+  .mutation("delete-player", {
+    input: z.object({
+      id: z.string().cuid(),
+    }),
+    async resolve({ input }) {
+      return await prisma.player.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    },
+  })
   .mutation("create-many-players", {
     input: z.array(playerSchema),
     async resolve({ input }) {
