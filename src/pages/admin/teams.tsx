@@ -61,12 +61,12 @@ const Teams: NextPage = () => {
         <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4">
           {players
             .sort((p1, p2) => {
-              if ((!p1.teamId && !p2.teamId) || (p1.teamId && p2.teamId)) {
+              if ((!p1.teamID && !p2.teamID) || (p1.teamID && p2.teamID)) {
                 // If both have a team ID or neither have a team ID, sort by their own ID
                 return p1.id.localeCompare(p2.id);
               }
               // Now it's one or the other; put the one without an ID at the top
-              return p1.teamId ? 1 : -1;
+              return p1.teamID ? 1 : -1;
             })
             .map((p) => (
               <li key={p.id}>
@@ -95,7 +95,7 @@ const Player: React.FC<{
       ref={drag}
       className={clsx([
         "border-slate-300 rounded-md w-full border p-2 cursor-move",
-        (isDragging || player.teamId) && "opacity-25",
+        (isDragging || player.teamID) && "opacity-25",
       ])}
     >
       <p>

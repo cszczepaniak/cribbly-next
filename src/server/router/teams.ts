@@ -71,7 +71,7 @@ export const teamRouter = createRouter()
     async resolve() {
       return await prisma.player.updateMany({
         data: {
-          teamId: "",
+          teamID: "",
         },
       });
     },

@@ -18,8 +18,8 @@ model Player {
     firstName String
     lastName  String
 
-    team   Team?   @relation(fields: [teamId], references: [id])
-    teamId String?
+    team   Team?   @relation(fields: [teamID], references: [id])
+    teamID String?
 }
 
 model Team {
@@ -28,8 +28,8 @@ model Team {
     players Player[]
     games   Game[]
 
-    division   Division? @relation(fields: [divisionId], references: [id])
-    divisionId String?
+    division   Division? @relation(fields: [divisionID], references: [id])
+    divisionID String?
 }
 
 model Division {
