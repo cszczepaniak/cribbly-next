@@ -64,11 +64,13 @@ const Teams: NextPage = () => {
           </li>
         </ul>
         <ul className="w-1/2 p-2 basis-1/3 flex flex-col space-y-4">
-          {players.map((p) => (
-            <li key={p.id}>
-              <Player player={p} />
-            </li>
-          ))}
+          {players
+            .sort((p) => (p.teamId ? 1 : -1))
+            .map((p) => (
+              <li key={p.id}>
+                <Player player={p} />
+              </li>
+            ))}
         </ul>
       </div>
     </div>
