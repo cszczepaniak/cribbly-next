@@ -137,18 +137,43 @@ const Team: React.FC<{
     <div
       ref={drop}
       className={clsx([
-        "border-slate-300 rounded-md w-full border p-2",
+        "border-slate-300 rounded-md w-full border p-2 space-y-1",
         isOver && team.players.length < 2 && "bg-blue-100",
         team.players.length === 2 && "bg-green-100",
       ])}
     >
       <p className="text-2xl mb-2">{getTeamName(team.players)}</p>
-      <p className="text-md">
-        Player 1:{team.players[0] ? ` ${fullPlayerName(team.players[0])}` : ""}
-      </p>
-      <p className="text-md">
-        Player 2:{team.players[1] ? ` ${fullPlayerName(team.players[1])}` : ""}
-      </p>
+      <PlayerRow index={0} team={team} />
+      <PlayerRow index={1} team={team} />
+    </div>
+  );
+};
+
+const PlayerRow: React.FC<{
+  team: InferQueryOutput<"team.get-all-teams">[number];
+  index: number;
+}> = ({ team, index }) => {
+  const ctx = trpc.useContext();
+  const { mutate: removePlayer } = trpc.useMutation("team.remove-player", {
+    onSuccess: () => {
+      ctx.invalidateQueries("player.get-all-players");
+      ctx.invalidateQueries("team.get-all-teams");
+    },
+  });
+  const player = team.players[index];
+  return (
+    <div className="text-lg flex flex-row justify-between">
+      <span>
+        Player {`${index + 1}`}: {fullPlayerName(player)}
+      </span>
+      {player && (
+        <button
+          className="text-sm border border-black px-2 rounded-md"
+          onClick={() => removePlayer({ teamID: team.id, playerID: player.id })}
+        >
+          Remove
+        </button>
+      )}
     </div>
   );
 };
