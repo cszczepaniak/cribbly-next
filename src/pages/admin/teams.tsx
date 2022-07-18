@@ -94,7 +94,7 @@ const Player: React.FC<{
     <div
       ref={drag}
       className={clsx([
-        "border-slate-300 rounded-md w-full border p-2",
+        "border-slate-300 rounded-md w-full border p-2 cursor-move",
         (isDragging || player.teamId) && "opacity-25",
       ])}
     >
