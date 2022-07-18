@@ -6,11 +6,6 @@ import { NextPage } from "next";
 import { useDrag, useDrop } from "react-dnd";
 import { trpc } from "utils/trpc";
 
-interface DropResult {
-  teamID: string;
-  playerIDs: string[];
-}
-
 const playerDnDType = "PLAYER";
 
 const Teams: NextPage = () => {
@@ -42,14 +37,14 @@ const Teams: NextPage = () => {
   }
 
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="w-full flex flex-col items-center p-4">
       <h1 className="text-5xl font-semibold pt-8 pb-8 text-center">Teams</h1>
-      <Button className="max-w-md" onClick={() => clearAllTeams()}>
+      <Button className="max-w-md mb-8" onClick={() => clearAllTeams()}>
         Clear All Teams
       </Button>
       <div className="flex flex-row justify-between w-full max-w-3xl">
-        <ul className="w-1/2 p-2 basis-2/3 flex flex-col space-y-2">
-          {teams.map((t, i) => (
+        <ul className="w-1/2 pr-2 basis-2/3 flex flex-col space-y-2">
+          {teams.map((t) => (
             <li key={t.id}>
               <Team team={t} />
             </li>
@@ -63,9 +58,16 @@ const Teams: NextPage = () => {
             </button>
           </li>
         </ul>
-        <ul className="w-1/2 p-2 basis-1/3 flex flex-col space-y-4">
+        <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4">
           {players
-            .sort((p) => (p.teamId ? 1 : -1))
+            .sort((p1, p2) => {
+              if ((!p1.teamId && !p2.teamId) || (p1.teamId && p2.teamId)) {
+                // If both have a team ID or neither have a team ID, sort by their own ID
+                return p1.id.localeCompare(p2.id);
+              }
+              // Now it's one or the other; put the one without an ID at the top
+              return p1.teamId ? 1 : -1;
+            })
             .map((p) => (
               <li key={p.id}>
                 <Player player={p} />
