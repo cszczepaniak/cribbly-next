@@ -155,7 +155,7 @@ const Division: React.FC<{
       ])}
     >
       <p className="text-2xl mb-2">{division.name}</p>
-      <ul>
+      <ul className="space-y-2">
         {division.teams.map((t, i) => (
           <li key={t.id}>
             <TeamRow index={i} team={t} divisionID={division.id} />
