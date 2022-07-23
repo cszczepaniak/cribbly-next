@@ -64,6 +64,22 @@ export const divisionRouter = createRouter()
       });
     },
   })
+  .mutation("set-name", {
+    input: z.object({
+      id: z.string().cuid(),
+      name: z.string().min(2).max(36),
+    }),
+    async resolve({ input }) {
+      return await prisma.division.update({
+        data: {
+          name: input.name,
+        },
+        where: {
+          id: input.id,
+        },
+      });
+    },
+  })
   .query("get-all", {
     async resolve() {
       return await prisma.division.findMany({

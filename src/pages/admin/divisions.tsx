@@ -3,6 +3,7 @@ import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
 import { NextPage } from "next";
+import { useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { trpc } from "utils/trpc";
 
@@ -131,6 +132,13 @@ const Division: React.FC<{
       },
     }
   );
+  const { mutate: setName } = trpc.useMutation(["division.set-name"], {
+    onSuccess: () => {
+      ctx.invalidateQueries(["division.get-all"]);
+    },
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(division.name);
 
   const [{ isOver }, drop] = useDrop<
     { teamID: string },
@@ -154,7 +162,46 @@ const Division: React.FC<{
         isOver && "bg-blue-100",
       ])}
     >
-      <p className="text-2xl mb-2">{division.name}</p>
+      <div className="flex flex-row mb-2">
+        {isEditing ? (
+          <>
+            <input
+              type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl mr-2"
+              placeholder="Division Name"
+            />
+            <div className="flex flex-col justify-around">
+              <button
+                className="text-sm border border-black px-1 rounded"
+                disabled={!editValue}
+                onClick={() => {
+                  if (!editValue) {
+                    return;
+                  }
+                  setName({ id: division.id, name: editValue });
+                  setIsEditing(false);
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="text-2xl mr-2">{division.name}</p>
+            <div className="flex flex-col justify-around">
+              <button
+                className="text-sm border border-black px-1 rounded"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit
+              </button>
+            </div>
+          </>
+        )}
+      </div>
       <ul className="space-y-2">
         {division.teams.map((t, i) => (
           <li key={t.id}>
