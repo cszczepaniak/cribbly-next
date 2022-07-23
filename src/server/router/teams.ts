@@ -81,6 +81,7 @@ export const teamRouter = createRouter()
       return await prisma.team.findMany({
         select: {
           id: true,
+          divisionID: true,
           players: true,
         },
       });
