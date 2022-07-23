@@ -1,6 +1,6 @@
 import { Button } from "@components/styled-button";
 import { fullPlayerName, Player } from "@shared/utils/players";
-import { sortByIDSet } from "@shared/utils/sort";
+import { sortByStringFieldDefined } from "@shared/utils/sort";
 import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
@@ -61,7 +61,7 @@ const Teams: NextPage = () => {
           </li>
         </ul>
         <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4">
-          {players.sort(sortByIDSet((p) => p.teamID)).map((p) => (
+          {players.sort(sortByStringFieldDefined((p) => p.teamID)).map((p) => (
             <li key={p.id}>
               <PlayerCard player={p} />
             </li>

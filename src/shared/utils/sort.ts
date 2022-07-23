@@ -1,4 +1,4 @@
-export function sortByIDSet<T extends { id: string }>(
+export function sortByStringFieldDefined<T extends { id: string }>(
   getID: (input: T) => string | null | undefined
 ) {
   return (t1: T, t2: T) => {
