@@ -71,7 +71,7 @@ const Teams: NextPage = () => {
             })
             .map((p) => (
               <li key={p.id}>
-                <Player player={p} />
+                <PlayerCard player={p} />
               </li>
             ))}
         </ul>
@@ -80,7 +80,7 @@ const Teams: NextPage = () => {
   );
 };
 
-const Player: React.FC<{
+const PlayerCard: React.FC<{
   player: InferQueryOutput<"player.get-all-players">[number];
 }> = ({ player }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
