@@ -1,5 +1,6 @@
 import { Button } from "@components/styled-button";
 import { fullPlayerName, Player } from "@shared/utils/players";
+import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
 import { NextPage } from "next";
@@ -176,15 +177,6 @@ const PlayerRow: React.FC<{
       )}
     </div>
   );
-};
-
-const getTeamName = (players: Player[]) => {
-  if (players[0] && !players[1]) {
-    return `Team ${players[0]?.lastName}`;
-  } else if (players[0] && players[1]) {
-    return `Team ${players[0]?.lastName}/${players[1]?.lastName}`;
-  }
-  return "New Team";
 };
 
 export default Teams;
