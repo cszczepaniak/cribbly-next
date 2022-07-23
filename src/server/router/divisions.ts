@@ -70,7 +70,13 @@ export const divisionRouter = createRouter()
         select: {
           id: true,
           name: true,
-          teams: true,
+          teams: {
+            select: {
+              id: true,
+              divisionID: true,
+              players: true,
+            },
+          },
         },
       });
     },
