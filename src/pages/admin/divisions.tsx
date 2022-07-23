@@ -133,14 +133,6 @@ const Division: React.FC<{
       },
     }
   );
-  const { mutate: setName } = trpc.useMutation(["division.set-name"], {
-    onSuccess: () => {
-      ctx.invalidateQueries(["division.get-all"]);
-    },
-  });
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(division.name);
-  const [editError, setEditError] = useState("");
 
   const [{ isOver }, drop] = useDrop<
     { teamID: string },
@@ -164,58 +156,7 @@ const Division: React.FC<{
         isOver && "bg-blue-100",
       ])}
     >
-      <div className="flex flex-row mb-2">
-        {isEditing ? (
-          <>
-            <div className="flex flex-col w-full mr-2">
-              <input
-                type="text"
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl"
-                placeholder="Division Name"
-              />
-              {editError && <p className="text-red-500">{editError}</p>}
-            </div>
-            <div className="flex flex-col justify-around">
-              <button
-                className="text-sm border border-black px-1 rounded"
-                disabled={!editValue}
-                onClick={() => {
-                  if (!editValue) {
-                    return;
-                  }
-                  const name = divisionNameSchema.safeParse(editValue);
-                  if (name.success) {
-                    setName({ id: division.id, name: editValue });
-                    setIsEditing(false);
-                    setEditError("");
-                  } else {
-                    const formatted = name.error.format();
-                    setEditError(
-                      formatted._errors[0] ?? "Unknown validation error"
-                    );
-                  }
-                }}
-              >
-                Save
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            <p className="text-2xl mr-2">{division.name}</p>
-            <div className="flex flex-col justify-around">
-              <button
-                className="text-sm border border-black px-1 rounded"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit
-              </button>
-            </div>
-          </>
-        )}
-      </div>
+      <EditableDivisionName division={division} />
       <ul className="space-y-2">
         {division.teams.map((t, i) => (
           <li key={t.id}>
@@ -223,6 +164,76 @@ const Division: React.FC<{
           </li>
         ))}
       </ul>
+    </div>
+  );
+};
+
+const EditableDivisionName: React.FC<{
+  division: { id: string; name: string };
+}> = ({ division: { id, name } }) => {
+  const ctx = trpc.useContext();
+  const { mutate: setName } = trpc.useMutation(["division.set-name"], {
+    onSuccess: () => {
+      ctx.invalidateQueries(["division.get-all"]);
+    },
+  });
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(name);
+  const [editError, setEditError] = useState("");
+
+  const handleSave = () => {
+    if (!editValue) {
+      return;
+    }
+    const name = divisionNameSchema.safeParse(editValue);
+    if (name.success) {
+      setName({ id, name: editValue });
+      setIsEditing(false);
+      setEditError("");
+    } else {
+      const formatted = name.error.format();
+      setEditError(formatted._errors[0] ?? "Unknown validation error");
+    }
+  };
+
+  return (
+    <div className="flex flex-row mb-2">
+      {isEditing ? (
+        <>
+          <div className="flex flex-col w-full mr-2">
+            <input
+              type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl"
+              placeholder="Division Name"
+            />
+            {editError && <p className="text-red-500">{editError}</p>}
+          </div>
+          <div className="flex flex-col justify-around">
+            <button
+              className="text-sm border border-black px-1 rounded"
+              disabled={!editValue}
+              onClick={handleSave}
+            >
+              Save
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="text-2xl mr-2">{name}</p>
+          <div className="flex flex-col justify-around">
+            <button
+              className="text-sm border border-black px-1 rounded"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
