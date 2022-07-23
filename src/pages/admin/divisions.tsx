@@ -1,4 +1,5 @@
 import { Button } from "@components/styled-button";
+import { divisionNameSchema } from "@shared/schemas";
 import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
@@ -139,6 +140,7 @@ const Division: React.FC<{
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(division.name);
+  const [editError, setEditError] = useState("");
 
   const [{ isOver }, drop] = useDrop<
     { teamID: string },
@@ -165,13 +167,16 @@ const Division: React.FC<{
       <div className="flex flex-row mb-2">
         {isEditing ? (
           <>
-            <input
-              type="text"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl mr-2"
-              placeholder="Division Name"
-            />
+            <div className="flex flex-col w-full mr-2">
+              <input
+                type="text"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl"
+                placeholder="Division Name"
+              />
+              {editError && <p className="text-red-500">{editError}</p>}
+            </div>
             <div className="flex flex-col justify-around">
               <button
                 className="text-sm border border-black px-1 rounded"
@@ -180,8 +185,17 @@ const Division: React.FC<{
                   if (!editValue) {
                     return;
                   }
-                  setName({ id: division.id, name: editValue });
-                  setIsEditing(false);
+                  const name = divisionNameSchema.safeParse(editValue);
+                  if (name.success) {
+                    setName({ id: division.id, name: editValue });
+                    setIsEditing(false);
+                    setEditError("");
+                  } else {
+                    const formatted = name.error.format();
+                    setEditError(
+                      formatted._errors[0] ?? "Unknown validation error"
+                    );
+                  }
                 }}
               >
                 Save

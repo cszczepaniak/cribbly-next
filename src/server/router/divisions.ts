@@ -1,11 +1,12 @@
 import { createRouter } from "./context";
 import { z } from "zod";
 import { prisma } from "../db/client";
+import { divisionNameSchema } from "@shared/schemas";
 
 export const divisionRouter = createRouter()
   .mutation("create", {
     input: z.object({
-      name: z.string().min(2).max(36),
+      name: divisionNameSchema,
     }),
     async resolve({ input }) {
       return await prisma.division.create({
@@ -67,7 +68,7 @@ export const divisionRouter = createRouter()
   .mutation("set-name", {
     input: z.object({
       id: z.string().cuid(),
-      name: z.string().min(2).max(36),
+      name: divisionNameSchema,
     }),
     async resolve({ input }) {
       return await prisma.division.update({
