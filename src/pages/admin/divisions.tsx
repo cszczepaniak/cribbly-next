@@ -1,5 +1,6 @@
 import { Button } from "@components/styled-button";
 import { divisionNameSchema } from "@shared/schemas";
+import { sortByIDSet } from "@shared/utils/sort";
 import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
@@ -74,23 +75,11 @@ const Divisions: NextPage = () => {
           </li>
         </ul>
         <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4">
-          {teams
-            .sort((t1, t2) => {
-              if (
-                (!t1.divisionID && !t2.divisionID) ||
-                (t1.divisionID && t2.divisionID)
-              ) {
-                // If both have a division ID or neither have a division ID, sort by their own ID
-                return t1.id.localeCompare(t2.id);
-              }
-              // Now it's one or the other; put the one without an ID at the top
-              return t1.divisionID ? 1 : -1;
-            })
-            .map((t) => (
-              <li key={t.id}>
-                <Team team={t} />
-              </li>
-            ))}
+          {teams.sort(sortByIDSet((t) => t.divisionID)).map((t) => (
+            <li key={t.id}>
+              <Team team={t} />
+            </li>
+          ))}
         </ul>
       </div>
     </div>

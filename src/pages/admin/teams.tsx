@@ -1,5 +1,6 @@
 import { Button } from "@components/styled-button";
 import { fullPlayerName, Player } from "@shared/utils/players";
+import { sortByIDSet } from "@shared/utils/sort";
 import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
@@ -60,20 +61,11 @@ const Teams: NextPage = () => {
           </li>
         </ul>
         <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4">
-          {players
-            .sort((p1, p2) => {
-              if ((!p1.teamID && !p2.teamID) || (p1.teamID && p2.teamID)) {
-                // If both have a team ID or neither have a team ID, sort by their own ID
-                return p1.id.localeCompare(p2.id);
-              }
-              // Now it's one or the other; put the one without an ID at the top
-              return p1.teamID ? 1 : -1;
-            })
-            .map((p) => (
-              <li key={p.id}>
-                <PlayerCard player={p} />
-              </li>
-            ))}
+          {players.sort(sortByIDSet((p) => p.teamID)).map((p) => (
+            <li key={p.id}>
+              <PlayerCard player={p} />
+            </li>
+          ))}
         </ul>
       </div>
     </div>
