@@ -5,9 +5,12 @@ import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
 import { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "utils/trpc";
+import { z } from "zod";
 
 const divisionDnDType = "DIVISION";
 
@@ -168,55 +171,71 @@ const EditableDivisionName: React.FC<{
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(name);
-  const [editError, setEditError] = useState("");
 
-  const handleSave = () => {
-    if (!editValue) {
-      return;
-    }
-    const name = divisionNameSchema.safeParse(editValue);
-    if (name.success) {
-      setName({ id, name: editValue });
-      setIsEditing(false);
-      setEditError("");
-    } else {
-      const formatted = name.error.format();
-      setEditError(formatted._errors[0] ?? "Unknown validation error");
-    }
+  const {
+    register,
+    handleSubmit,
+    setFocus,
+    formState: { errors, isValid, isSubmitted },
+  } = useForm<{ name: string }>({
+    resolver: zodResolver(
+      z.object({
+        name: divisionNameSchema,
+      })
+    ),
+    defaultValues: {
+      name,
+    },
+  });
+
+  const onSubmit: SubmitHandler<{ name: string }> = (data) => {
+    setName({ id, name: data.name });
+    setIsEditing(false);
   };
+
+  useEffect(() => {
+    if (isEditing) {
+      setFocus("name");
+    }
+  }, [isEditing, setFocus]);
 
   return (
     <div className="flex flex-row mb-2">
       {isEditing ? (
-        <>
-          <div className="flex flex-col w-full mr-2">
+        <form
+          className="flex flex-col w-full"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="flex flex-row">
             <input
+              {...register("name")}
               type="text"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl"
+              className="appearance-none border rounded-md w-full p-4 text-gray-700 leading-tight focus:outline-none text-2xl mr-2"
               placeholder="Division Name"
             />
-            {editError && <p className="text-red-500">{editError}</p>}
+            <div className="flex flex-col justify-around">
+              <button
+                type="submit"
+                className="text-sm border border-black px-1 rounded"
+                disabled={isSubmitted && !isValid}
+              >
+                Save
+              </button>
+            </div>
           </div>
-          <div className="flex flex-col justify-around">
-            <button
-              className="text-sm border border-black px-1 rounded"
-              disabled={!editValue}
-              onClick={handleSave}
-            >
-              Save
-            </button>
-          </div>
-        </>
+          {errors.name?.message && (
+            <p className="text-red-500">{errors.name.message}</p>
+          )}
+        </form>
       ) : (
         <>
           <p className="text-2xl mr-2">{name}</p>
           <div className="flex flex-col justify-around">
             <button
               className="text-sm border border-black px-1 rounded"
-              onClick={() => setIsEditing(true)}
+              onClick={() => {
+                setIsEditing(true);
+              }}
             >
               Edit
             </button>
