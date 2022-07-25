@@ -1,12 +1,18 @@
-export function sortByStringFieldDefined<T extends { id: string }>(
-  getID: (input: T) => string | null | undefined
+type getKeyFunc<T> = (input: T) => string | null | undefined;
+
+export function sortByStringKey<T extends { id: string }>(
+  getSortKey: getKeyFunc<T>,
+  getSecondarySortKey?: getKeyFunc<T>
 ) {
   return (t1: T, t2: T) => {
-    if ((!getID(t1) && !getID(t2)) || (getID(t1) && getID(t2))) {
+    if (
+      (!getSortKey(t1) && !getSortKey(t2)) ||
+      (getSortKey(t1) && getSortKey(t2))
+    ) {
       // If both have an ID or neither have an ID, sort by the secondary
       return t1.id.localeCompare(t2.id);
     }
     // Now it's one or the other; put the one without an ID at the top
-    return getID(t1) ? 1 : -1;
+    return getSortKey(t1) ? 1 : -1;
   };
 }

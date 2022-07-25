@@ -1,6 +1,6 @@
 import { Button } from "@components/styled-button";
 import { divisionNameSchema } from "@shared/schemas";
-import { sortByStringFieldDefined } from "@shared/utils/sort";
+import { sortByStringKey } from "@shared/utils/sort";
 import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
@@ -75,13 +75,11 @@ const Divisions: NextPage = () => {
           </li>
         </ul>
         <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4">
-          {teams
-            .sort(sortByStringFieldDefined((t) => t.divisionID))
-            .map((t) => (
-              <li key={t.id}>
-                <Team team={t} />
-              </li>
-            ))}
+          {teams.sort(sortByStringKey((t) => t.divisionID)).map((t) => (
+            <li key={t.id}>
+              <Team team={t} />
+            </li>
+          ))}
         </ul>
       </div>
     </div>
