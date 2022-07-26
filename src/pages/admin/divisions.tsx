@@ -78,11 +78,22 @@ const Divisions: NextPage = () => {
           </li>
         </ul>
         <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4">
-          {teams.sort(sortByStringKey((t) => t.divisionID)).map((t) => (
-            <li key={t.id}>
-              <Team team={t} />
-            </li>
-          ))}
+          {teams
+            .sort(
+              sortByStringKey(
+                (t) => t.divisionID,
+                (t1, t2) => {
+                  return getTeamName(t1.players).localeCompare(
+                    getTeamName(t2.players)
+                  );
+                }
+              )
+            )
+            .map((t) => (
+              <li key={t.id}>
+                <Team team={t} />
+              </li>
+            ))}
         </ul>
       </div>
     </div>
