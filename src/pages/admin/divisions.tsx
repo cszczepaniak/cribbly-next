@@ -5,7 +5,7 @@ import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,7 +45,22 @@ const Divisions: NextPage = () => {
     },
   });
 
-  if (teamsLoading || divisionsLoading || !teams || !divisions) {
+  const sortedTeams = useMemo(
+    () =>
+      teams?.sort(
+        sortByStringKey(
+          (t) => t.divisionID,
+          (t1, t2) => {
+            return getTeamName(t1.players).localeCompare(
+              getTeamName(t2.players)
+            );
+          }
+        )
+      ),
+    [teams]
+  );
+
+  if (teamsLoading || divisionsLoading || !sortedTeams || !divisions) {
     return <div>data loading...</div>;
   }
 
@@ -78,22 +93,11 @@ const Divisions: NextPage = () => {
           </li>
         </ul>
         <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4">
-          {teams
-            .sort(
-              sortByStringKey(
-                (t) => t.divisionID,
-                (t1, t2) => {
-                  return getTeamName(t1.players).localeCompare(
-                    getTeamName(t2.players)
-                  );
-                }
-              )
-            )
-            .map((t) => (
-              <li key={t.id}>
-                <Team team={t} />
-              </li>
-            ))}
+          {sortedTeams.map((t) => (
+            <li key={t.id}>
+              <Team team={t} />
+            </li>
+          ))}
         </ul>
       </div>
     </div>
