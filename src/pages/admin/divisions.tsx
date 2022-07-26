@@ -146,6 +146,7 @@ const Division: React.FC<{
       className={clsx([
         "border-slate-300 rounded-md w-full border p-2 space-y-1",
         isOver && "bg-blue-100",
+        division.teams.length >= 4 && "bg-green-100",
       ])}
     >
       <EditableDivisionName division={division} />
