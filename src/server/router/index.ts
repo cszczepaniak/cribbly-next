@@ -7,11 +7,13 @@ import { playerRouter } from "./players";
 import { adminRouter } from "./admin";
 import { teamRouter } from "./teams";
 import { divisionRouter } from "./divisions";
+import { gameRouter } from "./games";
 
 export const appRouter = createRouter()
   .transformer(superjson)
   .merge("player.", playerRouter)
   .merge("team.", teamRouter)
+  .merge("game.", gameRouter)
   .merge("division.", divisionRouter)
   .merge("auth.", authRouter)
   .merge("admin.", adminRouter);
