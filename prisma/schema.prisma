@@ -36,6 +36,7 @@ model Division {
 
     name  String
     teams Team[]
+    games Game[]
 }
 
 model Game {
@@ -47,6 +48,9 @@ model Game {
     kind       Int
     winner     String?
     loserScore Int?
+
+    division   Division @relation(fields: [divisionID], references: [id])
+    divisionID String
 
     @@index([winner])
     @@index([kind])
