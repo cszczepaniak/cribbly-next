@@ -65,7 +65,7 @@ const Divisions: NextPage = () => {
   }
 
   return (
-    <div className="w-full flex flex-col items-center p-4">
+    <div className="w-full flex flex-col items-center p-4 h-screen">
       <h1 className="text-5xl font-semibold pt-8 pb-8 text-center">
         Divisions
       </h1>
@@ -75,8 +75,8 @@ const Divisions: NextPage = () => {
       <Button className="max-w-md mb-8" onClick={() => clearAllDivisions()}>
         Clear All Divisions
       </Button>
-      <div className="flex flex-row justify-between w-full max-w-3xl">
-        <ul className="w-1/2 pr-2 basis-2/3 flex flex-col space-y-2">
+      <div className="flex flex-row justify-between w-full max-w-3xl  overflow-hidden">
+        <ul className="w-1/2 pr-2 basis-2/3 flex flex-col space-y-2 overflow-auto">
           {divisions
             .sort(
               sortFalsyFirst(
@@ -101,7 +101,7 @@ const Divisions: NextPage = () => {
             </button>
           </li>
         </ul>
-        <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4">
+        <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4 overflow-auto">
           {sortedTeams.map((t) => (
             <li key={t.id}>
               <Team team={t} />
