@@ -7,6 +7,7 @@ export const gameRouter = createRouter().mutation("create-prelims", {
     const divs = await prisma.division.findMany({
       select: {
         id: true,
+        name: true,
         teams: {
           select: {
             id: true,
@@ -14,6 +15,18 @@ export const gameRouter = createRouter().mutation("create-prelims", {
         },
       },
     });
+
+    let invalid = divs.reduce((prev, div) => {
+      if (div.teams.length !== 4 && div.teams.length !== 6) {
+        return [...prev, div.name];
+      }
+      return prev;
+    }, [] as string[]);
+    if (invalid.length > 0) {
+      throw new Error(
+        `The following divisions are invalid: ${invalid.join(", ")}`
+      );
+    }
 
     const games = generatePrelimGames(divs);
 
