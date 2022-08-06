@@ -23,6 +23,7 @@ const AdminLinks: React.FC<{ email: string; isAdmin: boolean }> = ({
         <LinkButton href="/admin/players">Player Management</LinkButton>
         <LinkButton href="/admin/teams">Team Management</LinkButton>
         <LinkButton href="/admin/divisions">Division Management</LinkButton>
+        <LinkButton href="/admin/games">Game Management</LinkButton>
         <LinkButton href="/admin/tournament">Tournament Management</LinkButton>
       </div>
     </>
