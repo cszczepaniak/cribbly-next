@@ -1,6 +1,6 @@
 import { Button } from "@components/styled-button";
 import { divisionNameSchema } from "@shared/schemas";
-import { sortByStringKey } from "@shared/utils/sort";
+import { sortFalsyFirst } from "@shared/utils/sort";
 import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
@@ -48,7 +48,7 @@ const Divisions: NextPage = () => {
   const sortedTeams = useMemo(
     () =>
       teams?.sort(
-        sortByStringKey(
+        sortFalsyFirst(
           (t) => t.divisionID,
           (t1, t2) => {
             return getTeamName(t1.players).localeCompare(
@@ -69,16 +69,25 @@ const Divisions: NextPage = () => {
       <h1 className="text-5xl font-semibold pt-8 pb-8 text-center">
         Divisions
       </h1>
+      <p className="text-2xl pb-4">
+        All divisions must either have 4 or 6 players.
+      </p>
       <Button className="max-w-md mb-8" onClick={() => clearAllDivisions()}>
         Clear All Divisions
       </Button>
       <div className="flex flex-row justify-between w-full max-w-3xl">
         <ul className="w-1/2 pr-2 basis-2/3 flex flex-col space-y-2">
-          {divisions.map((d) => (
-            <li key={d.id}>
-              <Division division={d} />
-            </li>
-          ))}
+          {divisions
+            .sort(
+              sortFalsyFirst(
+                (div) => div.teams.length == 4 || div.teams.length == 6
+              )
+            )
+            .map((d) => (
+              <li key={d.id}>
+                <Division division={d} />
+              </li>
+            ))}
           <li>
             <button
               className="border-slate-300 rounded-md w-full border border-dashed p-2 hover:opacity-50 hover:border-solid"
@@ -161,7 +170,8 @@ const Division: React.FC<{
       className={clsx([
         "border-slate-300 rounded-md w-full border p-2 space-y-1",
         isOver && "bg-blue-100",
-        division.teams.length >= 4 && "bg-green-100",
+        (division.teams.length == 4 || division.teams.length === 6) &&
+          "bg-green-100",
       ])}
     >
       <EditableDivisionName division={division} />

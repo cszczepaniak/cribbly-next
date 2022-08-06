@@ -1,6 +1,6 @@
 import { Button } from "@components/styled-button";
 import { fullPlayerName, Player } from "@shared/utils/players";
-import { sortByStringKey } from "@shared/utils/sort";
+import { sortFalsyFirst } from "@shared/utils/sort";
 import { getTeamName } from "@shared/utils/teams";
 import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import clsx from "clsx";
@@ -46,11 +46,13 @@ const Teams: NextPage = () => {
       </Button>
       <div className="flex flex-row justify-between w-full max-w-3xl">
         <ul className="w-1/2 pr-2 basis-2/3 flex flex-col space-y-2">
-          {teams.map((t) => (
-            <li key={t.id}>
-              <Team team={t} />
-            </li>
-          ))}
+          {teams
+            .sort(sortFalsyFirst((t) => t.players.length === 2))
+            .map((t) => (
+              <li key={t.id}>
+                <Team team={t} />
+              </li>
+            ))}
           <li>
             <button
               className="border-slate-300 rounded-md w-full border border-dashed p-2 hover:opacity-50 hover:border-solid"
@@ -61,7 +63,7 @@ const Teams: NextPage = () => {
           </li>
         </ul>
         <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4">
-          {players.sort(sortByStringKey((p) => p.teamID)).map((p) => (
+          {players.sort(sortFalsyFirst((p) => p.teamID)).map((p) => (
             <li key={p.id}>
               <PlayerCard player={p} />
             </li>

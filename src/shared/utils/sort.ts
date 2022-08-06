@@ -1,6 +1,6 @@
-type getKeyFunc<T> = (input: T) => string | null | undefined;
+type getKeyFunc<T> = (input: T) => string | null | undefined | boolean;
 
-export function sortByStringKey<T extends { id: string }>(
+export function sortFalsyFirst<T extends { id: string }>(
   getSortKey: getKeyFunc<T>,
   thenBy?: (in1: T, in2: T) => number
 ) {
