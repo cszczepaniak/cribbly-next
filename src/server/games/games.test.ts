@@ -32,9 +32,7 @@ test("generate prelims", () => {
     }
     expect(input).toHaveLength(expNum);
 
-    const pairSet = new Set(
-      input.map((pair) => pair.sort().reduce((prev, el) => `${prev},${el}`, ""))
-    );
+    const pairSet = new Set(input.map((pair) => pair.sort().join(",")));
     expect(pairSet.size).toEqual(input.length);
   };
 
