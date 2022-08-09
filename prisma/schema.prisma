@@ -44,14 +44,18 @@ model Game {
 
     team1ID String
     team2ID String
+    kind    Int
 
-    kind       Int
     winner     String?
     loserScore Int?
 
     division   Division @relation(fields: [divisionID], references: [id])
     divisionID String
 
+    // Unique index to ensure each team can only see each other once in the prelims and once in the tournament
+    @@unique([team1ID, team2ID, kind])
+    // Index by team2 so we can lookup by team2 efficiently; the unique index above covers team1
+    @@index([team2ID])
     @@index([winner])
     @@index([kind])
 }

@@ -41,6 +41,7 @@ export const gameRouter = createRouter()
             divisionID: divID,
           }))
         ),
+        skipDuplicates: true,
       });
     },
   })
