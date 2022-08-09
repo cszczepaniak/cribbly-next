@@ -6,8 +6,15 @@ import { Button } from "@components/styled-button";
 
 const Games: NextPage = () => {
   const ctx = trpc.useContext();
-  const { data, isLoading } = trpc.useQuery(["game.get-prelims"]);
-  const { mutate, error, isError } = trpc.useMutation("game.create-prelims", {
+  const { data, isLoading: prelimsLoading } = trpc.useQuery([
+    "game.get-prelims",
+  ]);
+  const {
+    mutate,
+    error,
+    isError,
+    isLoading: prelimsCreating,
+  } = trpc.useMutation("game.create-prelims", {
     onSuccess: () => {
       ctx.invalidateQueries(["game.get-prelims"]);
     },
@@ -19,15 +26,16 @@ const Games: NextPage = () => {
         Manage Games
       </h1>
       <Button
-        className="max-w-md mb-8"
+        disabled={prelimsCreating}
+        className="max-w-md mb-8 disabled:bg-blue-300 disabled:italic"
         onClick={() => {
           mutate();
         }}
       >
-        Generate Prelim Games
+        {prelimsCreating ? "Processing..." : "Generate Prelim Games"}
       </Button>
       {isError && <p className="text-red-500">{error.message}</p>}
-      <GameList isLoading={isLoading} data={data} />
+      <GameList isLoading={prelimsLoading} data={data} />
     </div>
   );
 };
