@@ -4,6 +4,7 @@ import { InferQueryOutput } from "@shared/utils/trpc-utils";
 import { getTeamName } from "@shared/utils/teams";
 import { Button } from "@components/styled-button";
 import { useState } from "react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const Games: NextPage = () => {
   const ctx = trpc.useContext();
@@ -47,13 +48,22 @@ const GameList: React.FC<{
   isLoading: boolean;
   data: InferQueryOutput<"game.get-prelims"> | undefined;
 }> = ({ isLoading, data }) => {
+  const [parent] = useAutoAnimate<HTMLDivElement>();
   const [showMore, setShowMore] = useState(false);
   if (isLoading || !data) {
     return <div className="text-lg">Loading games...</div>;
   }
   return (
-    <div className="w-full">
-      <h3>Prelim Game List</h3>
+    <div ref={parent} className="w-full border border-slate-300 p-2 rounded-md">
+      <div className="flex flex-row justify-between">
+        <h3 className="text-xl font-semibold">Prelim Game List</h3>
+        <button
+          className="bg-gray-100 hover:bg-gray-200 border border-black text-sm px-2 rounded-md"
+          onClick={() => setShowMore((prev) => !prev)}
+        >
+          {showMore ? "Show Less" : "Show More"}
+        </button>
+      </div>
       {showMore && (
         <ul className="w-full max-w-lg">
           {data.map((g, i) => (
