@@ -195,6 +195,12 @@ const EditableDivisionName: React.FC<{
       ctx.invalidateQueries(["division.get-all"]);
     },
   });
+  const { mutate: deleteDivision } = trpc.useMutation(["division.delete"], {
+    onSuccess: () => {
+      ctx.invalidateQueries(["division.get-all"]);
+      ctx.invalidateQueries(["team.get-full"]);
+    },
+  });
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -258,12 +264,20 @@ const EditableDivisionName: React.FC<{
           <p className="text-2xl mr-2">{name}</p>
           <div className="flex flex-col justify-around">
             <button
-              className="text-sm border border-black px-1 rounded"
+              className="text-sm border border-black px-1 rounded mr-2"
               onClick={() => {
                 setIsEditing(true);
               }}
             >
               Edit
+            </button>
+          </div>
+          <div className="flex flex-col justify-around">
+            <button
+              className="text-sm border border-black px-1 rounded"
+              onClick={() => deleteDivision({ id })}
+            >
+              Delete
             </button>
           </div>
         </>
