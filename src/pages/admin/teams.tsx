@@ -1,4 +1,5 @@
 import { Button } from "@components/styled-button";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { fullPlayerName, Player } from "@shared/utils/players";
 import { sortFalsyFirst } from "@shared/utils/sort";
 import { getTeamName } from "@shared/utils/teams";
@@ -11,6 +12,8 @@ import { trpc } from "utils/trpc";
 const playerDnDType = "PLAYER";
 
 const Teams: NextPage = () => {
+  const [playerParent] = useAutoAnimate<HTMLUListElement>();
+  const [teamParent] = useAutoAnimate<HTMLUListElement>();
   const ctx = trpc.useContext();
 
   const { data: teams, isLoading: teamsLoading } = trpc.useQuery([
@@ -45,7 +48,10 @@ const Teams: NextPage = () => {
         Clear All Teams
       </Button>
       <div className="flex flex-row justify-between w-full max-w-3xl overflow-hidden">
-        <ul className="w-1/2 pr-2 mr-4 basis-2/3 flex flex-col space-y-2 overflow-auto">
+        <ul
+          ref={teamParent}
+          className="w-1/2 pr-2 mr-4 basis-2/3 flex flex-col space-y-2 overflow-auto"
+        >
           {teams
             .sort(sortFalsyFirst((t) => t.players.length === 2))
             .map((t) => (
@@ -62,7 +68,10 @@ const Teams: NextPage = () => {
             </button>
           </li>
         </ul>
-        <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4 overflow-auto">
+        <ul
+          ref={playerParent}
+          className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4 overflow-auto"
+        >
           {players.sort(sortFalsyFirst((p) => p.teamID)).map((p) => (
             <li key={p.id}>
               <PlayerCard player={p} />
@@ -104,6 +113,7 @@ const Team: React.FC<{
   team: InferQueryOutput<"team.get-all-teams">[number];
   log?: boolean;
 }> = ({ team }) => {
+  const [parent] = useAutoAnimate<HTMLDivElement>();
   const ctx = trpc.useContext();
   const { mutate: addPlayerToTeam } = trpc.useMutation(["team.add-player"], {
     onSuccess: () => {
@@ -138,8 +148,10 @@ const Team: React.FC<{
       ])}
     >
       <p className="text-2xl mb-2">{getTeamName(team.players)}</p>
-      <PlayerRow index={0} team={team} />
-      <PlayerRow index={1} team={team} />
+      <div ref={parent}>
+        <PlayerRow index={0} team={team} />
+        <PlayerRow index={1} team={team} />
+      </div>
     </div>
   );
 };

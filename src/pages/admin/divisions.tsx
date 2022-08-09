@@ -11,6 +11,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "utils/trpc";
 import { z } from "zod";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const divisionDnDType = "DIVISION";
 
@@ -20,6 +21,8 @@ function invalidateAll(ctx: ReturnType<typeof trpc.useContext>) {
 }
 
 const Divisions: NextPage = () => {
+  const [teamsParent] = useAutoAnimate<HTMLUListElement>();
+  const [divisionsParent] = useAutoAnimate<HTMLUListElement>();
   const ctx = trpc.useContext();
 
   const { data: teams, isLoading: teamsLoading } = trpc.useQuery([
@@ -76,7 +79,10 @@ const Divisions: NextPage = () => {
         Clear All Divisions
       </Button>
       <div className="flex flex-row justify-between w-full max-w-3xl  overflow-hidden">
-        <ul className="w-1/2 pr-2 basis-2/3 flex flex-col space-y-2 overflow-auto">
+        <ul
+          ref={divisionsParent}
+          className="w-1/2 pr-2 basis-2/3 flex flex-col space-y-2 overflow-auto"
+        >
           {divisions
             .sort(
               sortFalsyFirst(
@@ -101,7 +107,10 @@ const Divisions: NextPage = () => {
             </button>
           </li>
         </ul>
-        <ul className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4 overflow-auto">
+        <ul
+          ref={teamsParent}
+          className="w-1/2 pl-2 basis-1/3 flex flex-col space-y-4 overflow-auto"
+        >
           {sortedTeams.map((t) => (
             <li key={t.id}>
               <Team team={t} />
@@ -140,6 +149,7 @@ const Team: React.FC<{
 const Division: React.FC<{
   division: InferQueryOutput<"division.get-all">[number];
 }> = ({ division }) => {
+  const [parent] = useAutoAnimate<HTMLUListElement>();
   const ctx = trpc.useContext();
   const { mutate: addTeamToDivision } = trpc.useMutation(
     ["division.add-team"],
@@ -175,7 +185,7 @@ const Division: React.FC<{
       ])}
     >
       <EditableDivisionName division={division} />
-      <ul className="space-y-2">
+      <ul ref={parent} className="space-y-2">
         {division.teams.map((t, i) => (
           <li key={t.id}>
             <TeamRow index={i} team={t} divisionID={division.id} />
