@@ -16,6 +16,28 @@ export const divisionRouter = createRouter()
       });
     },
   })
+  .mutation("delete", {
+    input: z.object({ id: z.string().cuid() }),
+    async resolve({ input }) {
+      return await prisma.$transaction([
+        prisma.division.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            teams: {
+              set: [],
+            },
+          },
+        }),
+        prisma.division.delete({
+          where: {
+            id: input.id,
+          },
+        }),
+      ]);
+    },
+  })
   .mutation("add-team", {
     input: z.object({
       teamID: z.string().cuid(),
