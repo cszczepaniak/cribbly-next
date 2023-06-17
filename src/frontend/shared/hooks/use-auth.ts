@@ -24,7 +24,6 @@ export function useAuth() {
       email: "testuser@local.com",
     };
   }
-  console.log(`isLoading: ${isLoading}; sessionUser: ${session?.user}; data: ${data}`)
 
   if (isLoading || !data || !session?.user) {
     return { isAdmin: false, isLoading: true, email: "" };

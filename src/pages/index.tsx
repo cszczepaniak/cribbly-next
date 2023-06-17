@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { LinkButton } from "../frontend/shared/components/link-button";
+import { Button } from "../frontend/shared/components/styled-button";
 import { signIn, signOut } from "next-auth/react";
 
 const Home: NextPage = () => {
@@ -23,8 +24,11 @@ const Home: NextPage = () => {
           <LinkButton href="/games">View Games</LinkButton>
           <LinkButton href="/results/prelim">View Prelim Standings</LinkButton>
         </div>
+        <div className="flex flex-row space-x-2">
+          <Button onClick={() => signOut()}>sign out</Button>
+          <Button onClick={() => signIn()}>sign in</Button>
+        </div>
       </div>
-      <button onClick={() => signOut()}>sign out</button>
     </>
   );
 };
