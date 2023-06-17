@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { LinkButton } from "../frontend/shared/components/link-button";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 
 const Home: NextPage = () => {
   return (
@@ -24,8 +24,7 @@ const Home: NextPage = () => {
           <LinkButton href="/results/prelim">View Prelim Standings</LinkButton>
         </div>
       </div>
-
-      <button onClick={() => signIn()}>sign in</button>
+      <button onClick={() => signOut()}>sign out</button>
     </>
   );
 };
