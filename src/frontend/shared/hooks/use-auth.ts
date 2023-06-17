@@ -5,7 +5,6 @@ import { trpc } from "utils/trpc";
 export function useAuth() {
   const { data: session } = useSession({
     required: true, onUnauthenticated: () => {
-      console.log('unauthed!')
       signIn()
     }
   });
