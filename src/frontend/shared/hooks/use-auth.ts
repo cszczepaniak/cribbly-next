@@ -1,9 +1,14 @@
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import React from "react";
 import { trpc } from "utils/trpc";
 
 export function useAuth() {
-  const { data: session } = useSession();
+  const { data: session } = useSession({
+    required: true, onUnauthenticated: () => {
+      console.log('unauthed!')
+      signIn()
+    }
+  });
   const isLocal = React.useMemo(
     () => process.env.NODE_ENV === "development",
     []
